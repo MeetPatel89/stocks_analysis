@@ -8,5 +8,6 @@ High_Price numeric(9, 6) not null,
 Low_Price numeric(9, 6) not null,
 Open_Price numeric(9, 6) not null,
 Volume int not null,
+Created datetime not null default getdate()
 primary key (Date, Ticker)
 );
