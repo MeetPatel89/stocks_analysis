@@ -1,0 +1,2 @@
+insert into bank_stocks
+values (?, ?, ?, ?, ?, ?, ?, ?, getdate())

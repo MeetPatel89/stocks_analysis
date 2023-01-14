@@ -1,7 +1,5 @@
 from config import SQL_DRIVER, SQL_SERVER, SQL_DB, SQL_USER, SQL_PWD
 import pyodbc
-import pandas as pd
-import numpy as np
 
 def conn_string(driver, server, db, user, pwd):
     """
@@ -42,12 +40,30 @@ def select_records(cnxn, query):
         cursor.close()
         cnxn.close()
 
+# execute sql insert statement
+def insert_records(cnxn, query, params):
+    """
+    Create cursor connection, execute sql query, and return all fetched records
+    """
+    try:
+        cursor = cnxn.cursor()
+        cursor.executemany(query, params)
+        if cursor.rowcount != -1:
+            rows = cursor.fetchall()
+            cursor.commit()
+            return rows
+        else:
+            cursor.commit()
+    except Exception as e:
+        cursor.rollback()
+        print(e.args[1])
+    finally:
+        cursor.close()
+        cnxn.close()
+
 # function to read file contents
 def read_contents(path):
     with open(path, "r") as file:
         contents = file.read()
     return contents
 
-
-# from config import ROOT_DIR
-# select_records(conn_odbc(), read_contents(rf"{ROOT_DIR}/sql/ddl_query.sql"))
