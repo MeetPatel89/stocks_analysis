@@ -1,4 +1,5 @@
-drop table if exists bank_stocks;
+if object_id('bank_stocks') is not null
+	drop table bank_stocks;
 create table bank_stocks (
 Date date not null,
 Ticker varchar(10) not null,

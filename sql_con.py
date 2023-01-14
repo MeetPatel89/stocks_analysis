@@ -1,5 +1,7 @@
 from config import SQL_DRIVER, SQL_SERVER, SQL_DB, SQL_USER, SQL_PWD
 import pyodbc
+import pandas as pd
+import numpy as np
 
 def conn_string(driver, server, db, user, pwd):
     """
@@ -19,7 +21,7 @@ def conn_odbc(driver=SQL_DRIVER, server=SQL_SERVER, db=SQL_DB, user=SQL_USER, pw
         print("Connection Error:")
         print(e.args[1])
 
-# create cursor connection
+# execute sql statement
 def select_records(cnxn, query):
     """
     Create cursor connection, execute sql query, and return all fetched records
@@ -27,12 +29,25 @@ def select_records(cnxn, query):
     try:
         cursor = cnxn.cursor()
         cursor.execute(query)
-        rows = cursor.fetchall()
-        cursor.commit()
+        if cursor.rowcount != -1:
+            rows = cursor.fetchall()
+            cursor.commit()
+            return rows
+        else:
+            cursor.commit()
     except Exception as e:
         cursor.rollback()
         print(e.args[1])
     finally:
         cursor.close()
         cnxn.close()
-        return rows
+
+# function to read file contents
+def read_contents(path):
+    with open(path, "r") as file:
+        contents = file.read()
+    return contents
+
+
+# from config import ROOT_DIR
+# select_records(conn_odbc(), read_contents(rf"{ROOT_DIR}/sql/ddl_query.sql"))
